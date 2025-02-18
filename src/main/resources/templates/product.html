@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Sản Phẩm - Cửa Hàng Điện Tử</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            max-width: 250px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Cửa Hàng Điện Tử</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link active" href="#">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Giỏ hàng (<span id="cart-count">0</span>)</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tài khoản</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Bộ lọc và Sắp xếp -->
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-3 sidebar">
+            <h5>Bộ Lọc & Sắp Xếp</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="filter" class="form-label">Lọc theo danh mục</label>
+                    <select id="filter" class="form-select">
+                        <option value="all">Tất cả</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="phone">Điện thoại</option>
+                        <option value="headphone">Tai nghe</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="sort" class="form-label">Sắp xếp theo giá</label>
+                    <select id="sort" class="form-select">
+                        <option value="default">Mặc định</option>
+                        <option value="asc">Giá tăng dần</option>
+                        <option value="desc">Giá giảm dần</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-9">
+            <!-- Tìm kiếm sản phẩm -->
+            <div class="mb-4">
+                <input type="text" id="search" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+            </div>
+            <section class="products py-5">
+                <div class="container">
+                    <h2 class="text-center mb-4">Danh Sách Sản Phẩm</h2>
+                    <div class="row" id="productList">
+                        <div class="col-md-4 mb-4 product-item" data-category="laptop" data-price="15000000">
+                            <div class="card">
+                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Sản phẩm 1">
+                                <div class="card-body">
+                                    <h5 class="card-title">Laptop Dell Inspiron</h5>
+                                    <p class="card-text">Giá: 15,000,000 VND</p>
+                                    <button class="btn btn-warning add-to-cart">Thêm vào giỏ</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4 product-item" data-category="phone" data-price="22000000">
+                            <div class="card">
+                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Sản phẩm 2">
+                                <div class="card-body">
+                                    <h5 class="card-title">Điện thoại iPhone 13</h5>
+                                    <p class="card-text">Giá: 22,000,000 VND</p>
+                                    <button class="btn btn-warning add-to-cart">Thêm vào giỏ</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4 product-item" data-category="headphone" data-price="6500000">
+                            <div class="card">
+                                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Sản phẩm 3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tai nghe Sony WH-1000XM4</h5>
+                                    <p class="card-text">Giá: 6,500,000 VND</p>
+                                    <button class="btn btn-warning add-to-cart">Thêm vào giỏ</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4">
+    <p>&copy; 2025 Cửa hàng điện tử - Tất cả quyền lợi được bảo vệ</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let cart = [];
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            let product = this.parentElement;
+            let name = product.querySelector('.card-title').textContent;
+            let price = product.querySelector('.card-text').textContent;
+            cart.push({ name, price });
+            updateCart();
+        });
+    });
+
+    function updateCart() {
+        document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    // Tìm kiếm sản phẩm
+    document.getElementById('search').addEventListener('input', function() {
+        let searchTerm = this.value.toLowerCase();
+        let products = document.querySelectorAll('.product-item');
+        products.forEach(product => {
+            let productName = product.querySelector('.card-title').textContent.toLowerCase();
+            if (productName.includes(searchTerm)) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>

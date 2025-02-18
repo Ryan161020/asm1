@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - Cửa Hàng Điện Tử</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-4">
+    <h2 class="text-center mb-4">Xác Nhận Thông Tin Thanh Toán</h2>
+    <p>Tổng tiền: <strong th:text="${totalPrice}">0 VND</strong></p>
+    <form th:action="@{/cart/checkout}" method="post">
+        <div class="mb-3">
+            <label for="customerName" class="form-label">Họ và tên</label>
+            <input type="text" class="form-control" id="customerName" name="customerName" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Số điện thoại</label>
+            <input type="text" class="form-control" id="phone" name="phone" required>
+        </div>
+        <div class="mb-3">
+            <label for="shippingAddress" class="form-label">Địa chỉ giao hàng</label>
+            <textarea class="form-control" id="shippingAddress" name="shippingAddress" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Hình thức thanh toán</label>
+            <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                <option value="Credit Card">Thanh toán qua thẻ tín dụng</option>
+                <!-- Các lựa chọn khác nếu cần -->
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">Xác nhận thanh toán và lưu đơn hàng</button>
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
