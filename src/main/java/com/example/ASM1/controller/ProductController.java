@@ -37,6 +37,19 @@ public String findAll(Model model) {
         return "Index";
 
     }
+    @GetMapping("/showprd")
+    public String showsp(Model model) {
+        List<Product> products = productService.findAll();
+
+        NumberFormat df = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+        for (Product product : products) {
+            String formattedPrice = df.format(product.getPrice());
+            product.setFormattedPrice(formattedPrice); // Gán giá đã định dạng vào thuộc tính mới
+        }
+        model.addAttribute("products", products);
+        return "product";
+
+    }
     @GetMapping("/quanLysp")
     public String formProduct(Model model) {
         List<Product> products = productService.findAll();
