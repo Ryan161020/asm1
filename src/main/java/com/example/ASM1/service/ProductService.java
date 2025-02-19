@@ -27,5 +27,11 @@ return productRepository.save(product);
         return productRepository.findById(productId);
     }
 
+    // Phương thức xóa sản phẩm theo id
+    public void deleteById(int productId) {
+        productRepository.deleteById(productId);
+    }
+
+
 
 }

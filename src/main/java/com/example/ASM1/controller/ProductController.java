@@ -74,6 +74,36 @@ public String findAll(Model model) {
         return "redirect:/product/quanLysp";
     }
 
+    // Phương thức hiển thị form chỉnh sửa sản phẩm
+    @GetMapping("/edit")
+    public String edit(@RequestParam("id") int productId, Model model) {
+        Product product = productService.findById(productId).orElse(null);
+        if (product != null) {
+            model.addAttribute("product", product);
+            return "editProduct";
+        }
+        return "redirect:/product/quanLysp";
+    }
+
+
+    // Xử lý cập nhật sản phẩm sau khi sửa
+    @PostMapping("/update")
+    public String update(Product product) {
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+            return "redirect:/product/quanLysp";
+        }
+        productService.save(product);
+        return "redirect:/product/quanLysp";
+    }
+    // Phương thức xóa sản phẩm
+    @GetMapping("/delete")
+    public String delete(@RequestParam("productId") int productId) {
+        productService.deleteById(productId);
+        return "redirect:/product/quanLysp";
+    }
+
+
+
 
 
 

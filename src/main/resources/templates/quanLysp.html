@@ -70,8 +70,12 @@
           <td th:text="${products.name}"></td>
           <td th:text="${products.formattedPrice}"></td>
           <td>Laptop</td>
-          <td><button class="btn btn-danger">Xóa</button></td>
+          <td>
+            <a th:href="@{/product/edit(id=${products.productId})}" class="btn btn-warning me-2">Sửa</a>
+            <a th:href="@{/product/delete(productId=${products.productId})}" class="btn btn-danger">Xóa</a>
+          </td>
         </tr>
+
 
         </tbody>
       </table>

@@ -15,21 +15,19 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Cửa Hàng Điện Tử</a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Giỏ hàng</a></li>
-                <li class="nav-item"><a class="nav-link active" href="#">Tài khoản</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/product/findAll}">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/product/showprd}">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link"th:href="@{/cart/view}" >Giỏ hàng</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tài khoản</a></li>
             </ul>
         </div>
     </div>
 </nav>
-
 <!-- Trang Đăng Nhập -->
 <div class="container my-4">
     <div class="login-container">
