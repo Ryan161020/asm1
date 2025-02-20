@@ -17,7 +17,7 @@
                 <li class="nav-item"><a class="nav-link active" th:href="@{/product/findAll}">Trang chủ</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/product/showprd}">Sản phẩm</a></li>
                 <li class="nav-item"><a class="nav-link"th:href="@{/cart/view}" >Giỏ hàng</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Tài khoản</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/auth/login}">Tài khoản</a></li>
             </ul>
         </div>
     </div>
@@ -40,13 +40,15 @@
             <!-- Render danh sách sản phẩm -->
             <div class="col-md-4 mb-4" th:each="products : ${products}">
                 <div class="card">
-<!--                    <img th:src="@{${products.image}}" class="card-img-top" th:alt="${products.name}">-->
+                 <img th:if="${products.imageUrl != null}"
+                                     th:src="${products.imageUrl}"
+                                     alt="Ảnh sản phẩm" style="max-width: 100px; max-height: 100px;"/>
                     <div class="card-body">
                         <h5 class="card-title" th:text="${products.name}">Tên sản phẩm</h5>
                         <p class="card-text" th:text="'Giá: ' + ${products.formattedPrice} + ' VND'">Giá sản phẩm</p>
                         <form th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${products.productId}" />
-                            <button type="submit" class="btn btn-warning">Thêm vào giỏ</button>
+                            <button class="add-to-cart" data-product-id="123">Thêm vào giỏ hàng</button>
                         </form>
                     </div>
                 </div>
@@ -61,5 +63,40 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script>-->
+<!--    document.querySelectorAll('.add-to-cart').forEach(function(button) {-->
+<!--        button.addEventListener('click', function(event) {-->
+<!--            event.preventDefault(); // Ngăn reload trang-->
+
+<!--            // Lấy ID sản phẩm từ thuộc tính data-->
+<!--            const productId = button.getAttribute('data-product-id');-->
+
+<!--            // Gửi request POST tới endpoint /product/add-->
+<!--            fetch('/product/add', {-->
+<!--                method: 'POST',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/x-www-form-urlencoded'-->
+<!--                },-->
+<!--                // Gửi productId dưới dạng URL-encoded-->
+<!--                body: 'productId=' + encodeURIComponent(productId)-->
+<!--            })-->
+<!--                .then(response => response.text())-->
+<!--                .then(result => {-->
+<!--                    if (result.trim() === "success") {-->
+<!--                        // Có thể cập nhật giao diện giỏ hàng nếu muốn-->
+<!--                        console.log("Sản phẩm đã được thêm vào giỏ hàng!");-->
+<!--                        alert("Sản phẩm đã được thêm vào giỏ hàng!");-->
+<!--                    } else {-->
+<!--                        console.error("Lỗi:", result);-->
+<!--                        alert("Có lỗi xảy ra: " + result);-->
+<!--                    }-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    console.error("Lỗi mạng:", error);-->
+<!--                    alert("Lỗi mạng: " + error);-->
+<!--                });-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

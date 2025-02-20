@@ -14,10 +14,10 @@
     <a class="navbar-brand" href="#">Cửa Hàng Điện Tử - Quản Lý</a>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Trang chủ</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Quản lý sản phẩm</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Quản lý đơn hàng</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Quản lý người dùng</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/auth/login}">Trang chủ</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/product/quanLysp}">Quản lý sản phẩm</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/order/findAll}">Quản lý đơn hàng</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/user/findAllUser}">Quản lý người dùng</a></li>
       </ul>
     </div>
   </div>
@@ -29,7 +29,8 @@
   <div class="row">
     <div class="col-md-6">
       <h4>1. Thêm Sản Phẩm</h4>
-      <form th:object="${product}" action="/product/save" method="post">
+      <!-- Form hợp nhất với enctype multipart/form-data -->
+      <form th:object="${product}" action="/product/save" method="post" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="productName" class="form-label">Tên Sản Phẩm</label>
           <input th:field="*{name}" type="text" class="form-control" id="productName" placeholder="Nhập tên sản phẩm">
@@ -39,8 +40,9 @@
           <input th:field="*{price}" type="number" class="form-control" id="productPrice" placeholder="Nhập giá sản phẩm">
         </div>
         <div class="mb-3">
-          <label for="productCategory" class="form-label">Danh Mục</label>
-          <select class="form-select" id="productCategory">
+          <label  class="form-label">Danh Mục</label>
+          <select class="form-select">
+            <option value="">Chọn danh mục</option>
             <option value="laptop">Laptop</option>
             <option value="phone">Điện thoại</option>
             <option value="headphone">Tai nghe</option>
@@ -48,7 +50,7 @@
         </div>
         <div class="mb-3">
           <label for="productImage" class="form-label">Hình Ảnh</label>
-          <input th:field="*{imageUrl}" type="file" class="form-control" id="productImage">
+          <input type="file" name="imageFile" class="form-control" id="productImage">
         </div>
         <button type="submit" class="btn btn-primary">Thêm Sản Phẩm</button>
       </form>
@@ -59,6 +61,7 @@
       <table class="table">
         <thead>
         <tr>
+          <th scope="col">Ảnh</th>
           <th scope="col">Tên Sản Phẩm</th>
           <th scope="col">Giá</th>
           <th scope="col">Danh Mục</th>
@@ -67,16 +70,23 @@
         </thead>
         <tbody>
         <tr th:each="products : ${products}">
+          <td>
+            <img th:if="${products.imageUrl != null}"
+                 th:src="${products.imageUrl}"
+                 alt="Ảnh sản phẩm" style="max-width: 70px; max-height: 70px;"/>
+
+          </td>
           <td th:text="${products.name}"></td>
           <td th:text="${products.formattedPrice}"></td>
-          <td>Laptop</td>
+          <td th:text="${products.category}"></td>
           <td>
-            <a th:href="@{/product/edit(id=${products.productId})}" class="btn btn-warning me-2">Sửa</a>
-            <a th:href="@{/product/delete(productId=${products.productId})}" class="btn btn-danger">Xóa</a>
+            <div class="d-flex gap-2">
+              <a th:href="@{/product/edit(id=${products.productId})}" class="btn btn-warning">Sửa</a>
+              <a th:href="@{/product/delete(productId=${products.productId})}" class="btn btn-danger">Xóa</a>
+            </div>
           </td>
+
         </tr>
-
-
         </tbody>
       </table>
     </div>

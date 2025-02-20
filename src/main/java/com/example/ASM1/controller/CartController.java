@@ -10,8 +10,10 @@ import com.example.ASM1.Entity.Product;
 import com.example.ASM1.service.OrderService;
 import com.example.ASM1.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -60,15 +62,13 @@ public class CartController {
 
     // Thêm sản phẩm vào giỏ hàng
     @PostMapping("/add")
+    @ResponseBody
     public String addToCart(@RequestParam("productId") int productId,
                             @ModelAttribute("cart") List<CartItem> cart) {
-
-        // Lấy thông tin sản phẩm từ database qua service
         Optional<Product> optProduct = productService.findById(productId);
         if (optProduct.isPresent()) {
             Product product = optProduct.get();
             boolean found = false;
-            // Kiểm tra nếu sản phẩm đã có trong giỏ thì tăng số lượng
             for (CartItem item : cart) {
                 if (item.getProduct().getProductId() == product.getProductId()) {
                     item.setQuantity(item.getQuantity() + 1);
@@ -76,16 +76,17 @@ public class CartController {
                     break;
                 }
             }
-            // Nếu chưa có, thêm mới sản phẩm vào giỏ với số lượng 1
             if (!found) {
                 cart.add(new CartItem(product, 1));
             }
         }
-        return "redirect:/product/findAll";
+        return "success";
     }
+
 
     // Xóa một sản phẩm khỏi giỏ hàng theo productId
     @PostMapping("/remove")
+
     public String removeFromCart(@RequestParam("productId") int productId,
                                  @ModelAttribute("cart") List<CartItem> cart) {
         cart.removeIf(item -> item.getProduct().getProductId() == productId);

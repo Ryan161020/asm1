@@ -8,11 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.sql.SQLOutput;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -64,13 +66,34 @@ public String findAll(Model model) {
     }
 
     @PostMapping("/save")
-    public String save(Product product) {
-        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO)<= 0)
-        {
+    public String save(Product product, @RequestParam("imageFile") MultipartFile file) {
+        try {
+            if (!file.isEmpty()) {
+                // Lấy MIME type của file (ví dụ: image/png, image/jpeg, image/gif,...)
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    // Nếu không xác định được hoặc không phải là ảnh, có thể dùng mặc định
+                    contentType = "image/png";
+                }
+                String base64Image = Base64.getEncoder().encodeToString(file.getBytes());
+                // Tạo Data URL động dựa trên MIME type của file
+                product.setImageUrl("data:" + contentType + ";base64," + base64Image);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+
+
+        // Kiểm tra giá sản phẩm hợp lệ
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             return "redirect:/product/quanLysp";
         }
+
+        // Lưu sản phẩm vào database
         productService.save(product);
-        System.out.println("ok");
+        System.out.println("Product saved successfully: " + product);
+
         return "redirect:/product/quanLysp";
     }
 
@@ -85,16 +108,34 @@ public String findAll(Model model) {
         return "redirect:/product/quanLysp";
     }
 
-
-    // Xử lý cập nhật sản phẩm sau khi sửa
+    // Cập nhật sản phẩm
     @PostMapping("/update")
-    public String update(Product product) {
+    public String update(Product product, @RequestParam("imageFile") MultipartFile file) {
+        try {
+            if (!file.isEmpty()) {
+                String uploadDir = "C:/uploads/images/";
+                java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
+                if (!java.nio.file.Files.exists(uploadPath)) {
+                    java.nio.file.Files.createDirectories(uploadPath);
+                }
+                String originalFilename = file.getOriginalFilename();
+                String fileName = System.currentTimeMillis() + "_" + originalFilename;
+                java.nio.file.Path filePath = uploadPath.resolve(fileName);
+                file.transferTo(filePath.toFile());
+                product.setImageUrl(fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             return "redirect:/product/quanLysp";
         }
         productService.save(product);
+        System.out.println("Product updated successfully: " + product);
         return "redirect:/product/quanLysp";
     }
+
     // Phương thức xóa sản phẩm
     @GetMapping("/delete")
     public String delete(@RequestParam("productId") int productId) {

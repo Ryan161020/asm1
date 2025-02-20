@@ -59,8 +59,8 @@
 <body>
 <div class="container">
     <h2>Sửa Sản Phẩm</h2>
-    <!-- Sử dụng Thymeleaf để binding đối tượng product -->
-    <form th:action="@{/update-product}" th:object="${product}" method="post">
+    <!-- Chỉ sử dụng 1 form -->
+    <form th:action="@{/product/update}" th:object="${product}" method="post">
         <!-- Trường ẩn để lưu productId -->
         <input type="hidden" th:field="*{productId}"/>
 
@@ -73,22 +73,18 @@
         <label for="description">Mô tả:</label>
         <textarea id="description" th:field="*{description}" placeholder="Nhập mô tả sản phẩm" required></textarea>
 
-        <label for="category">Danh mục:</label>
-        <select id="category" th:field="*{category}" required>
-            <option value="">Chọn danh mục</option>
-            <option value="electronics">Điện tử</option>
-            <option value="fashion">Thời trang</option>
-            <option value="home">Nhà cửa</option>
-        </select>
+<!--        <label for="category">Danh mục:</label>-->
+<!--        <select id="category" th:field="*{category}" required>-->
+<!--            <option value="">Chọn danh mục</option>-->
+<!--            <option value="electronics">Điện tử</option>-->
+<!--            <option value="fashion">Thời trang</option>-->
+<!--            <option value="home">Nhà cửa</option>-->
+<!--        </select>-->
 
         <label for="image">Hình ảnh sản phẩm:</label>
         <input type="text" id="image" th:field="*{imageUrl}" placeholder="URL hình ảnh sản phẩm">
 
-        <form th:action="@{/product/update}" th:object="${product}" method="post">
-
-
         <button type="submit" class="btn">Cập nhật sản phẩm</button>
-
     </form>
 </div>
 </body>
