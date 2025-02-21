@@ -4,7 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang Chủ - Cửa Hàng Điện Tử</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Container ảnh sản phẩm */
+        .product-image {
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 220px; /* Giảm chiều cao để sản phẩm nhỏ gọn hơn */
+            background-color: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* Ảnh sản phẩm */
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+        .product-img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Card sản phẩm */
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Nút Thêm vào giỏ hàng */
+        .add-to-cart {
+            transition: all 0.3s ease-in-out;
+        }
+        .add-to-cart:hover {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+    </style>
 </head>
 <body>
 
@@ -12,11 +56,15 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Cửa Hàng Điện Tử</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link active" th:href="@{/product/findAll}">Trang chủ</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/product/showprd}">Sản phẩm</a></li>
-                <li class="nav-item"><a class="nav-link"th:href="@{/cart/view}" >Giỏ hàng</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cart/view}">Giỏ hàng</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/auth/login}">Tài khoản</a></li>
             </ul>
         </div>
@@ -40,19 +88,27 @@
             <!-- Render danh sách sản phẩm -->
             <div class="col-md-4 mb-4" th:each="products : ${products}">
                 <div class="card">
-                 <img th:if="${products.imageUrl != null}"
-                                     th:src="${products.imageUrl}"
-                                     alt="Ảnh sản phẩm" style="max-width: 100px; max-height: 100px;"/>
-                    <div class="card-body">
+                    <!-- Phần ảnh sản phẩm -->
+                    <div class="product-image">
+                        <img th:if="${products.imageUrl != null}"
+                             th:src="${products.imageUrl}"
+                             alt="Ảnh sản phẩm"
+                             class="product-img">
+                    </div>
+                    <!-- Nội dung sản phẩm -->
+                    <div class="card-body text-center">
                         <h5 class="card-title" th:text="${products.name}">Tên sản phẩm</h5>
                         <p class="card-text" th:text="'Giá: ' + ${products.formattedPrice} + ' VND'">Giá sản phẩm</p>
                         <form th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${products.productId}" />
-                            <button class="add-to-cart" data-product-id="123">Thêm vào giỏ hàng</button>
+                            <button type="submit" class="btn btn-primary add-to-cart" data-product-id="123">
+                                Thêm vào giỏ hàng
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
+            <!-- Kết thúc vòng lặp -->
         </div>
     </div>
 </section>
@@ -62,41 +118,7 @@
     <p>&copy; 2025 Cửa hàng điện tử - Tất cả quyền lợi được bảo vệ</p>
 </footer>
 
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!--<script>-->
-<!--    document.querySelectorAll('.add-to-cart').forEach(function(button) {-->
-<!--        button.addEventListener('click', function(event) {-->
-<!--            event.preventDefault(); // Ngăn reload trang-->
-
-<!--            // Lấy ID sản phẩm từ thuộc tính data-->
-<!--            const productId = button.getAttribute('data-product-id');-->
-
-<!--            // Gửi request POST tới endpoint /product/add-->
-<!--            fetch('/product/add', {-->
-<!--                method: 'POST',-->
-<!--                headers: {-->
-<!--                    'Content-Type': 'application/x-www-form-urlencoded'-->
-<!--                },-->
-<!--                // Gửi productId dưới dạng URL-encoded-->
-<!--                body: 'productId=' + encodeURIComponent(productId)-->
-<!--            })-->
-<!--                .then(response => response.text())-->
-<!--                .then(result => {-->
-<!--                    if (result.trim() === "success") {-->
-<!--                        // Có thể cập nhật giao diện giỏ hàng nếu muốn-->
-<!--                        console.log("Sản phẩm đã được thêm vào giỏ hàng!");-->
-<!--                        alert("Sản phẩm đã được thêm vào giỏ hàng!");-->
-<!--                    } else {-->
-<!--                        console.error("Lỗi:", result);-->
-<!--                        alert("Có lỗi xảy ra: " + result);-->
-<!--                    }-->
-<!--                })-->
-<!--                .catch(error => {-->
-<!--                    console.error("Lỗi mạng:", error);-->
-<!--                    alert("Lỗi mạng: " + error);-->
-<!--                });-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
 </body>
 </html>
