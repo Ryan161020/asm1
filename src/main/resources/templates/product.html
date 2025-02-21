@@ -65,10 +65,15 @@
                         <!-- Lặp qua danh sách sản phẩm -->
                         <div class="col-md-4 mb-4 product-item" th:each="product : ${products}">
                             <div class="card">
-                                <img th:if="${product.imageUrl != null}"
-                                     th:src="${product.imageUrl}"
-                                     alt="Ảnh sản phẩm" style="max-width: 100px; max-height: 100px;"/>
+<!--                                <img th:if="${product.imageUrl != null}"-->
+<!--                                     th:src="${product.imageUrl}"-->
+<!--                                     alt="Ảnh sản phẩm" style="max-width: 100px; max-height: 100px;"/>-->
+
                                 <div class="card-body">
+                                    <img th:if="${product.imageUrl != null}"
+                                         th:src="${product.imageUrl}"
+                                         alt="Ảnh sản phẩm" style="max-width: 100px; max-height: 100px;"/>
+
                                     <h5 class="card-title" th:text="${product.name}">Laptop Dell Inspiron</h5>
                                     <p class="card-text" th:text="'Giá: ' + ${product.formattedPrice} + ' VND'">Giá: 15,000,000 VND</p>
                                     <form th:action="@{/cart/add}" method="post">
