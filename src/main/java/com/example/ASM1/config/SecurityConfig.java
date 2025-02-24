@@ -6,41 +6,60 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 @Configuration
-public class SecurityConfig  {
+@EnableWebSecurity
+public class SecurityConfig {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf(csrf -> csrf.disable()) // ❌ Có thể bật lại sau khi kiểm tra
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/auth/**", "/login", "/logout", "/home","/order/**", "/user/**","/product/**", "/cart/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/test-password","/auth/**", "/login", "/logout", "/home", "/product/**", "/cart/**").permitAll() // ✅ Cho phép truy cập trang không cần đăng nhập
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // 🔒 Chỉ ADMIN mới vào được Admin
+                        .anyRequest().permitAll() // ✅ Các trang khác cần đăng nhập
                 )
-                .formLogin(login -> login
-                        .loginPage("/auth/login")
-                        .loginProcessingUrl("/login") // URL xử lý đăng nhập
-                        .usernameParameter("email") // Đặt email làm username
+                .formLogin(form -> form
+                        .loginPage("/auth/login") // ✅ Trang đăng nhập tùy chỉnh
+                        .loginProcessingUrl("/login") // ✅ URL xử lý đăng nhập, form cần submit đúng đường dẫn này
+                        .usernameParameter("email") // ✅ Dùng email thay vì username
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/auth/login?error=true") // Chuyển hướng khi đăng nhập thất bại
+                        .successHandler(customAuthenticationSuccessHandler()) // ✅ Chuyển hướng sau đăng nhập
+                        .failureUrl("/auth/login?error=true") // ✅ Nếu sai mật khẩu, quay lại login với lỗi
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // Hỗ trợ GET logout
                         .logoutSuccessUrl("/auth/login?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
+
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            authentication.getAuthorities().forEach(authority -> {
+                try {
+                    if (authority.getAuthority().equals("ROLE_ADMIN")) {
+                        response.sendRedirect("/product/admin"); // ✅ Nếu là Admin → Trang Admin
+                    } else {
+                        response.sendRedirect("/product/findAll"); // ✅ Nếu là User → Trang chính
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        };
     }
 
     @Bean
@@ -50,6 +69,8 @@ public class SecurityConfig  {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return authenticationConfiguration
+
+                .getAuthenticationManager();
     }
 }

@@ -22,7 +22,7 @@
 </nav>
 <div class="container my-4">
     <h2 class="text-center mb-4">Xác Nhận Thông Tin Thanh Toán</h2>
-    <p>Tổng tiền: <strong th:text="${totalPrice}">0 VND</strong></p>
+    <p class="fw-bold">Tổng tiền: <span th:text="${totalPrice}"></span></p>
     <form th:action="@{/cart/checkout}" method="post">
         <div class="mb-3">
             <label for="customerName" class="form-label">Họ và tên</label>

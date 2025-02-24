@@ -26,6 +26,12 @@ public class ProductController {
     private ProductService productService;
 
 
+    @GetMapping("/admin")
+    public String admin(Model model) {
+        return "admin";
+    }
+
+
     @GetMapping("/findAll")
 public String findAll(Model model) {
         List<Product> products = productService.findAll();

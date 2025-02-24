@@ -1,88 +1,92 @@
-  <!DOCTYPE html>
-  <html lang="vi">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Người Dùng - Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Người Dùng - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Cửa Hàng Điện Tử - Quản Lý</a>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" th:href="@{/auth/login}">Trang chủ</a></li>
-          <li class="nav-item"><a class="nav-link" th:href="@{/product/quanLysp}">Quản lý sản phẩm</a></li>
-          <li class="nav-item"><a class="nav-link" th:href="@{/order/findAll}">Quản lý đơn hàng</a></li>
-          <li class="nav-item"><a class="nav-link" th:href="@{/user/findAllUser}">Quản lý người dùng</a></li>
-
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Quản Lý Người Dùng -->
-  <div class="container my-4">
-    <h2>Quản Lý Người Dùng</h2>
-    <div class="row">
-      <div class="col-md-6">
-        <h4>1. Thêm Người Dùng</h4>
-        <form th:object="${user}" action="/user/saveUser" method="post">
-          <div class="mb-3">
-            <label for="userName" class="form-label">Tên Người Dùng</label>
-            <input type="text" th:field="*{username}" class="form-control" id="userName">
-          </div>
-          <div class="mb-3">
-            <label for="userEmail" class="form-label">Email</label>
-            <input type="email" th:field="*{email}" class="form-control" id="userEmail">
-          </div>
-          <div class="mb-3">
-            <label for="userPassword" class="form-label">Mật khẩu</label>
-            <input type="password" th:field="*{password}" class="form-control" id="userPassword">
-          </div>
-          <div class="mb-3">
-            <label for="userRole" class="form-label">Chọn vai trò</label>
-            <select class="form-control" th:field="*{role}">
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary">Thêm Người Dùng</button>
-        </form>
-
-
-      </div>
-
-      <div class="col-md-6">
-        <h4>2. Danh Sách Người Dùng</h4>
-        <table class="table">
-          <thead>
-          <tr>
-            <th scope="col">Tên Người Dùng</th>
-            <th scope="col">Email</th>
-            <th scope="col">Vai trò</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="users : ${users}">
-            <td th:text="${users.username}"></td>
-            <td th:text="${users.email}"></td>
-            <td th:text="${users.role}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Cửa Hàng Điện Tử - Quản Lý</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/product/admin}">Trang chủ</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/product/quanLysp}">Quản lý sản phẩm</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/order/findAll}">Quản lý đơn hàng</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/user/findAllUser}">Quản lý người dùng</a></li>
+      </ul>
     </div>
   </div>
+</nav>
 
-  <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-4">
-    <p>&copy; 2025 Cửa hàng điện tử - Tất cả quyền lợi được bảo vệ</p>
-  </footer>
+<!-- Quản Lý Người Dùng -->
+<div class="container my-4">
+  <h2>Quản Lý Người Dùng</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <h4>1. Thêm/Sửa Người Dùng</h4>
+      <form th:object="${user}" action="/user/saveUser" method="post">
+        <!-- Thêm hidden input để lưu ID khi chỉnh sửa -->
+        <input type="hidden" th:field="*{userId}" />
+        <div class="mb-3">
+          <label for="userName" class="form-label">Tên Người Dùng</label>
+          <input type="text" th:field="*{username}" class="form-control" id="userName">
+        </div>
+        <div class="mb-3">
+          <label for="userEmail" class="form-label">Email</label>
+          <input type="email" th:field="*{email}" class="form-control" id="userEmail">
+        </div>
+        <div class="mb-3">
+          <label for="userPassword" class="form-label">Mật khẩu</label>
+          <input type="password" th:field="*{password}" class="form-control" id="userPassword" placeholder="Nhập mật khẩu mới (bỏ trống nếu không thay đổi)">
+        </div>
+        <div class="mb-3">
+          <label for="userRole" class="form-label">Chọn vai trò</label>
+          <select class="form-control" th:field="*{role}">
+            <option value="ROLE_ADMIN">Admin</option>
+            <option value="ROLE_USER">User</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Lưu Người Dùng</button>
+      </form>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-  </html>
+    <div class="col-md-6">
+      <h4>2. Danh Sách Người Dùng</h4>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Tên Người Dùng</th>
+          <th scope="col">Email</th>
+          <th scope="col">Vai trò</th>
+          <th scope="col">Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+          <td th:text="${user.username}"></td>
+          <td th:text="${user.email}"></td>
+          <td th:text="${user.role}"></td>
+          <td>
+            <a th:href="@{/user/editUser/{id}(id=${user.userId})}" class="btn btn-sm btn-warning">Sửa</a>
+            <a th:href="@{/user/deleteUser/{id}(id=${user.userId})}" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa người dùng này?')">Xóa</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4">
+  <p>© 2025 Cửa hàng điện tử - Tất cả quyền lợi được bảo vệ</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

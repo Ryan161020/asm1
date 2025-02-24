@@ -8,13 +8,15 @@ import java.util.Date;
 @Data // Lombok tự động tạo getter, setter, toString
 @Table(name = "users")
 public class User {
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer userId;
+
+    @Column(name = "username", nullable = false, unique = true, length = 50)
+    private String username;
 
     public Integer getUserId() {
         return userId;
@@ -24,12 +26,20 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getEmail() {
@@ -48,21 +58,13 @@ public class User {
         this.password = password;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public String getUsername() {
+        return username;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setUsername(String username) {
+        this.username = username;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @Column(name = "username", nullable = false, unique = true, length = 50)
-    private String username;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;

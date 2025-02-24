@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
+
     <style>
         /* Container ảnh sản phẩm */
         .product-image {
@@ -134,22 +135,24 @@
                                     </p>
                                     <form th:action="@{/cart/add}" method="post">
                                         <input type="hidden" name="productId" th:value="${product.productId}" />
-                                        <button type="submit" class="btn btn-primary add-to-cart"
-                                                data-product-id="123">
+                                        <!-- Đúng cách -->
+                                        <button type="button" class="btn btn-primary add-to-cart"
+                                                th:data-product-id="${product.productId}">
                                             Thêm vào giỏ hàng
                                         </button>
+
                                     </form>
-                                </div>
-                            </div>
-                        </div>
                         <!-- Kết thúc vòng lặp -->
                     </div>
                 </div>
+        </div>
+    </div>
+</div>
             </section>
         </div>
     </div>
 </div>
-
+</body>
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-4">
     <p>&copy; 2025 Cửa hàng điện tử - Tất cả quyền lợi được bảo vệ</p>
@@ -158,41 +161,50 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Xử lý thêm vào giỏ hàng bằng Fetch API -->
-<script>
-    document.querySelectorAll('.add-to-cart').forEach(function(button) {
-        button.addEventListener('click', function(event) {
-            event.preventDefault(); // Ngăn trang reload
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>$(document).ready(function () {
+    $(".add-to-cart").click(function () {
+        let productId = $(this).attr("data-product-id");
+        console.log("🛒 Click vào nút! Product ID:", productId);
 
-            // Lấy ID sản phẩm từ thuộc tính data
-            const productId = button.getAttribute('data-product-id');
-
-            // Gửi request POST tới endpoint /product/add
-            fetch('/product/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                // Gửi productId dưới dạng URL-encoded
-                body: 'productId=' + encodeURIComponent(productId)
-            })
-                .then(response => response.text())
-                .then(result => {
-                    if (result.trim() === "success") {
-                        // Có thể cập nhật giao diện giỏ hàng nếu muốn
-                        console.log("Sản phẩm đã được thêm vào giỏ hàng!");
-                        alert("Sản phẩm đã được thêm vào giỏ hàng!");
-                    } else {
-                        console.error("Lỗi:", result);
-                        alert("Có lỗi xảy ra: " + result);
-                    }
-                })
-                .catch(error => {
-                    console.error("Lỗi mạng:", error);
-                    alert("Lỗi mạng: " + error);
+        $.ajax({
+            url: "/cart/add",
+            type: "POST",  // ✅ Đảm bảo gửi phương thức POST
+            contentType: "application/x-www-form-urlencoded",
+            data: { productId: productId },
+            beforeSend: function () {
+                console.log("🚀 Gửi request AJAX với productId:", productId);
+            },
+            success: function (response) {
+                console.log("✅ Server Response:", response);
+                Swal.fire({
+                    icon: "success",
+                    title: "Thành công!",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
                 });
+            },
+            error: function (xhr) {
+                console.error("❌ Lỗi AJAX:", xhr.responseText);
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi!",
+                    text: "Thêm vào giỏ hàng thất bại!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
         });
     });
+});
+
+
 </script>
-</body>
+
+
+
+
+
+
 </html>

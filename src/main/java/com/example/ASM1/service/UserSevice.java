@@ -24,5 +24,11 @@ public class UserSevice {
         return userRepository.save(user);
     }
 
+    public User findById(Integer userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
 
+    public void deleteById(Integer userId) {
+        userRepository.deleteById(userId);
+    }
 }
